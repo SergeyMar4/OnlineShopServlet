@@ -4,15 +4,12 @@ import com.sergeymar4.onlineshopservlet.models.Manufacturer;
 import com.sergeymar4.onlineshopservlet.repositories.ManufacturerRepository;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class ManufacturerController {
     private ManufacturerRepository manufacturerRepository;
-    private Scanner scanner;
 
-    public ManufacturerController(Scanner scanner) {
+    public ManufacturerController() {
         this.manufacturerRepository = new ManufacturerRepository();
-        this.scanner = scanner;
     }
 
     public List<Manufacturer> getAll() {
@@ -23,17 +20,11 @@ public class ManufacturerController {
         return manufacturerRepository.getById(id);
     }
 
-    public void create(String title, String country) {
-        Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setTitle(title);
-        manufacturer.setCountry(country);
+    public void create(Manufacturer manufacturer) {
         manufacturerRepository.save(manufacturer);
     }
 
-    public void update(int id, String title, String country) {
-        Manufacturer manufacturer = manufacturerRepository.getById(id);
-        manufacturer.setTitle(title);
-        manufacturer.setCountry(country);
+    public void update(Manufacturer manufacturer) {
         manufacturerRepository.update(manufacturer);
     }
 

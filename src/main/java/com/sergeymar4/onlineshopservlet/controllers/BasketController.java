@@ -1,27 +1,26 @@
 package com.sergeymar4.onlineshopservlet.controllers;
 
 import com.sergeymar4.onlineshopservlet.models.Basket;
+import com.sergeymar4.onlineshopservlet.models.Product;
 import com.sergeymar4.onlineshopservlet.repositories.BasketRepository;
 import com.sergeymar4.onlineshopservlet.repositories.CustomerRepository;
 import com.sergeymar4.onlineshopservlet.repositories.ProductRepository;
 import com.sergeymar4.onlineshopservlet.repositories.ShopRepository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class BasketController {
     private BasketRepository basketRepository;
     private CustomerRepository customerRepository;
     private ProductRepository productRepository;
     private ShopRepository shopRepository;
-    private Scanner scanner;
 
-    public BasketController(Scanner scanner) {
+    public BasketController() {
         this.basketRepository = new BasketRepository();
         this.customerRepository = new CustomerRepository();
         this.productRepository = new ProductRepository();
         this.shopRepository = new ShopRepository();
-        this.scanner = scanner;
     }
 
     public List<Basket> getAll() {
@@ -40,18 +39,33 @@ public class BasketController {
         basketRepository.deleteProduct(basketRepository.getById(basket_id), productRepository.getById(product_id));
     }
 
-    public void create(int customer_id, int shop_id) {
-        Basket basket = new Basket();
-        basket.setCustomer(customerRepository.getById(customer_id));
-        basket.setShop(shopRepository.getById(shop_id));
+    public void create(Basket basket) {
+        basket.setCustomer(customerRepository.getById(basket.getCustomer().getId()));
+        basket.setShop(shopRepository.getById(basket.getShop().getId()));
+        basket.setProducts(basket.getProducts());
         basketRepository.save(basket);
     }
 
-    public void update(int id, int customer_id, int shop_id) {
-        Basket basket = basketRepository.getById(id);
-        basket.setCustomer(customerRepository.getById(customer_id));
-        basket.setShop(shopRepository.getById(shop_id));
-        basketRepository.update(basket);
+    public void update(Basket basket) {
+        Basket oldBasket = basketRepository.getById(basket.getId());
+
+        if (basket.getCustomer() != null) {
+            oldBasket.setCustomer(customerRepository.getById(basket.getCustomer().getId()));
+        }
+        if (basket.getShop() != null) {
+            oldBasket.setShop(shopRepository.getById(basket.getShop().getId()));
+        }
+        if (basket.getProducts() != null) {
+            List<Product> products = new ArrayList<>();
+
+            for (Product product : basket.getProducts()) {
+                products.add(productRepository.getById(product.getId()));
+            }
+
+            oldBasket.setProducts(products);
+        }
+
+        basketRepository.update(oldBasket);
     }
 
     public void delete(int id) {

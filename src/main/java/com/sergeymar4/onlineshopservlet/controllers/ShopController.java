@@ -4,15 +4,12 @@ import com.sergeymar4.onlineshopservlet.models.Shop;
 import com.sergeymar4.onlineshopservlet.repositories.ShopRepository;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class ShopController {
     private ShopRepository shopRepository;
-    private Scanner scanner;
 
-    public ShopController(Scanner scanner) {
+    public ShopController() {
         this.shopRepository = new ShopRepository();
-        this.scanner = scanner;
     }
 
     public List<Shop> getAll() {
@@ -23,15 +20,11 @@ public class ShopController {
         return shopRepository.getById(id);
     }
 
-    public void create(String title) {
-        Shop shop = new Shop();
-        shop.setTitle(title);
+    public void create(Shop shop) {
         shopRepository.save(shop);
     }
 
-    public void update(int id, String title) {
-        Shop shop = shopRepository.getById(id);
-        shop.setTitle(title);
+    public void update(Shop shop) {
         shopRepository.update(shop);
     }
 
